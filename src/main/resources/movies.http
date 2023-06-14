@@ -1,0 +1,68 @@
+#add - OK
+POST http://localhost:8000/movies
+Content-Type: application/json
+
+{
+  "title": "Jurassic Park",
+  "description": "During a preview tour, a theme park suffers a major power breakdown...",
+  "duration": 127,
+  "premiere": "1993-06-11",
+  "director": "Steven Spielberg",
+  "cast": "Sam Neill, Laura Dern, Jeff Goldblum, Richard Attenborough...",
+  "categoryId": 2,
+  "genreId": 4
+}
+
+###
+#getAll - OK
+GET http://localhost:8000/movies/all
+Accept:  application/json
+
+###
+GET http://localhost:8000/movies/all?page=1&size=5
+Accept:  application/json
+
+###
+
+#getById - OK
+GET http://localhost:8000/movies/30
+Content-Type: application/json
+
+###
+#getInfo - OK
+GET http://localhost:8000/movies/30/info
+Content-Type: application/json
+
+###
+#edit - OK
+PUT http://localhost:8000/movies/30
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "Аватар",
+  "description": "Филм за пътешествие на човек в пандорска планета",
+  "duration": 170,
+  "premiere": "2009-12-18",
+  "director": "Джеймс Камерън",
+  "cast": "Сам Уортингтън, Зоуи Салдана, Сигурни Уийвър",
+  "category": 1,
+  "genre": 1
+}
+###
+#remove - OK
+DELETE http://localhost:8000/movies/30
+Accept:  application/json
+
+###
+# filter by Genre с POST - OK
+POST http://localhost:8000/movies/filter
+Content-Type: application/json
+
+2
+
+###
+# filter by Genre - OK
+GET http://localhost:8000/movies/filterByGenre/2
+Content-Type: application/json
+

@@ -1,0 +1,53 @@
+#1  add
+POST http://localhost:8080/projections
+Content-Type: application/json
+
+{
+  "startTime": "11:30:00",
+  "date": "2024-05-01",
+  "price": 22,
+  "hallId": 25,
+  "movieId": 5
+}
+
+###
+#2  getById
+GET http://localhost:8080/projections/12
+Content-Type: application/json
+
+###
+#3  edit
+PUT http://localhost:8080/projections/12
+Content-Type: application/json
+
+{
+  "startTime": "11:30:00",
+  "date": "2024-05-01",
+  "hallId": 1,
+  "movieId": 5
+}
+###
+#4  remove
+DELETE http://localhost:8000/projections/15
+Accept:  application/json
+
+###
+#5  filter by Movie
+POST http://localhost:8000/projections/filter
+Content-Type: application/json
+
+4
+
+###
+#6  filter by Cinema
+GET http://localhost:8000/projections/cinema/1
+Content-Type: application/json
+
+###
+#7  get available seats
+GET http://localhost:8080/projections/28/seats
+Content-Type: application/json
+
+
+###
+

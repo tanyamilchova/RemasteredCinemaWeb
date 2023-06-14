@@ -1,0 +1,24 @@
+# book tickets - не попълва id на новия ticket и не взима id-то на прожекцията
+POST http://localhost:8000/tickets
+Content-Type: application/json
+
+{
+  "isRegular": false,
+  "projectionId": 7,
+  "rowNumber": 6,
+  "colNumber": 5,
+  "price": 17.5,
+  "discount": 2.5
+}
+
+###
+# get ticket by id - OK
+#Ако всички колони са попълнени
+GET http://localhost:8080/tickets/4
+Content-Type: application/json
+
+###
+# get ticket by id - OK
+#Ако имам null колони
+GET http://localhost:8000/tickets/7
+Content-Type: application/json

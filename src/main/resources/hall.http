@@ -1,0 +1,21 @@
+POST http://localhost:8000/halls
+Content-Type: application/json
+
+{
+  "type_id": 2,
+  "rows": 10,
+  "columns": 12,
+  "cinema_id":7
+}
+###
+#edit
+PUT http://localhost:8000/halls/1
+Content-Type: application/json
+
+{
+
+  "cinema_id": 1,
+  "type_id": 2,
+  "rows": 100,
+  "columns": 12
+}

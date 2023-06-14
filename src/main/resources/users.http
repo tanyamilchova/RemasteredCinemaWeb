@@ -1,0 +1,285 @@
+#1 register user
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "first_name": "AdminABV",
+  "last_name": "Milchova",
+  "email": "margot11@abv.bg",
+  "password": "123456Sbb#",
+  "confirmPassword":"123456Sbb#",
+  "birth_date": "2000-12-01",
+  "city_id": 1,
+  "gender": "m",
+  "phone_number": "0888888855",
+  "role_name": "ADMIN"
+
+}
+###
+#2 register user
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "first_name": "UserGmail",
+  "last_name": "Milchova",
+  "email": "margot11margot11@gmail.com",
+  "password": "123456Sbb#",
+  "confirmPassword":"123456Sbb#",
+  "birth_date": "2000-12-01",
+  "city_id": 1,
+  "gender": "m",
+  "phone_number": "0888888855",
+  "role_name": "USER"
+
+}
+###
+#3 login userAdmin
+POST http://localhost:8080/users/login
+Content-Type: application/json
+
+{
+  "email": "margot11@abv.bg",
+  "password": "123456Sbb#"
+
+
+}
+###
+#4 login user
+POST http://localhost:8080/users/login
+Content-Type: application/json
+
+{
+  "email": "margot11margot11@gmail.com",
+  "password": "123456Sbb#"
+
+
+}
+###
+#5 logout user
+POST http://localhost:8080/users/logout
+Content-Type: application/json
+
+###
+#6  change password
+PUT http://localhost:8080/users/changePass
+Content-Type: application/json
+
+{
+ "currentPassword": "123456Sb#",
+ "newPassword": "123456Sbb#",
+ "confirmNewPassword": "123456Sbb#",
+  "email": "user3@abv.bg"
+
+
+}
+###
+#7 edit profile
+PUT http://localhost:8080/users/edit
+Content-Type: application/json
+
+{
+  "first_name": "Boris",
+  "last_name": "Parov",
+  "email": "boris@abv.bg",
+  "password": "123456Sb#",
+  "birth_date": "2000-12-01",
+  "city_id": 1,
+  "gender": "m",
+  "phone_number": "0888888811",
+  "role_name": "ADMIN"
+}
+###
+#8 get user by id
+GET http://localhost:8080/users/56
+Content-Type: application/json
+
+###
+#9  delete user
+DELETE http://localhost:8080/users/20
+Accept:  application/json
+
+###
+#10 edit profile
+PUT http://localhost:8080/users/edit
+Content-Type: application/json
+
+{
+  "first_name": "AdminT",
+  "last_name": "Milchova",
+  "email": "margot11margot11@gmail.com",
+  "password": "123456Sb#",
+  "confirmPassword":"123456Sb#",
+  "birth_date": "2000-12-01",
+  "city_id": 1,
+  "gender": "m",
+  "phone_number": "0888888855",
+  "role_name": "ADMIN"
+}
+###
+
+
+
+
+
+
+
+
+#11 edit profile
+PUT http://localhost:8080/users/edit
+Content-Type: application/json
+
+{
+  "first_name": "AdminT",
+  "last_name": "Milcova",
+  "email": "margot11margot11@gmail.com",
+  "password": "123456Sb#",
+  "confirmPassword":"123456Sb#",
+  "birth_date": "2000-12-01",
+  "city_id": 1,
+  "gender": "m",
+  "phone_number": "0888888855",
+  "role_name": "ADMIN",
+  "confirmatronToken": " "
+}
+
+
+
+
+
+
+
+###
+#12 get user
+GET http://localhost:8080/users/12
+Content-Type: application/json
+
+###
+# delete user
+DELETE http://localhost:8080/users/20
+Accept:  application/json
+###
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "first_name": "PenoABV",
+  "last_name": "Penev",
+  "email": "ivonovastar@abv.bg",
+  "password": "123456Sbb#",
+  "confirmPassword":"123456Sbb#",
+  "birth_date": "2000-12-01",
+  "city_id": 1,
+  "gender": "m",
+  "phone_number": "0888888855",
+  "role_name": "USER"
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+###
+# login user
+POST http://localhost:8000/users/login
+Content-Type: application/json
+
+{
+  "email": "example123@example.com",
+  "password": "Passw0rd!"
+}
+###
+# edit profile
+PUT http://localhost:8000/users/edit
+Content-Type: application/json
+
+{
+  "id": 12,
+  "first_name": "Chloe",
+  "last_name": "Smith",
+  "email": "chloesmith@abv.bg",
+  "birth_date": "1989-12-12",
+  "city_id": 2,
+  "gender": "F",
+  "phone_number": "9876543210",
+  "role_name": "USER"
+}
+###
+# login user
+POST http://localhost:8000/users/login
+Content-Type: application/json
+
+{
+  "email": "chloesmith@abv.bg",
+  "password": "123456Sb#"
+}
+###
+
+POST http://localhost:8000/users/login
+Content-Type: application/json
+
+{
+  "email": "user3@abv.bg",
+  "password": "123456Sb#"
+
+
+}
+###
+POST http://localhost:8000/users
+Content-Type: application/json
+
+{
+  "first_name": "User3",
+  "last_name": "Parov",
+  "email": "user3@abv.bg",
+  "password": "123456Sb#",
+  "confirmPassword":"123456Sb#",
+  "birth_date": "2000-12-01",
+  "city_id": 1,
+  "gender": "m",
+  "phone_number": "0888888855",
+  "role_name": "USER"
+}
+###
+# ????????????????????????????????????????????????????????????????????????????????????????????????????????
+POST http://localhost:8080/users/login
+Content-Type: application/json
+
+{
+  "email": "margot11margot11@gmail.com",
+  "password": "123456Sbb#"
+
+
+}
+###
+# edit profile
+PUT http://localhost:8080/users/edit
+Content-Type: application/json
+
+{
+  "first_name": "MargotGmail",
+  "last_name": "Margot",
+  "email":  "margot11margot11@gmail.com",
+  "password": "123456Sb#",
+  "birth_date": "2000-12-01",
+  "city_id": 1,
+  "gender": "m",
+  "phone_number": "0888888877",
+  "role_name": "USER"
+}
+###
+# logout user
+POST http://localhost:8080/users/logout
+Content-Type: application/json
+
+
+

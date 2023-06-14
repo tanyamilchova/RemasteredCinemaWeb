@@ -1,0 +1,44 @@
+#add
+POST http://localhost:8000/cinemas
+Content-Type: application/json
+
+{
+  "name": "ArenaSofia10",
+  "address": "Sofia",
+  "city_id": 1,
+  "phone_number": "0888222288"
+}
+###
+#filter
+POST http://localhost:8000/cinemas/filter
+Content-Type: application/json
+
+{
+  "city_id": 1
+
+}
+###
+#edit
+PUT http://localhost:8000/cinemas/10
+Content-Type: application/json
+
+{
+
+  "name": "ArenaSofia13",
+  "address": "Sofia",
+  "city_id": 1,
+  "phone_number": "0888222299"
+}
+
+###
+#getById
+GET http://localhost:8000/cinemas/3
+Content-Type: application/json
+###
+#getAll
+GET http://localhost:8000/cinemas/all
+Accept:  application/json
+###
+#remove
+DELETE http://localhost:8000/cinemas/7
+Accept:  application/json
