@@ -5,6 +5,7 @@ mvnw.cmd
 mvnw
 HELP.md
 target/
+uploads/
 # Compiled class file
 *.class
 
