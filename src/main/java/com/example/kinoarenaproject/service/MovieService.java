@@ -5,14 +5,23 @@ import com.example.kinoarenaproject.model.entities.*;
 import com.example.kinoarenaproject.model.exceptions.BadRequestException;
 import com.example.kinoarenaproject.model.exceptions.UnauthorizedException;
 import com.example.kinoarenaproject.model.repositories.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,107 +30,89 @@ import java.util.stream.Collectors;
 @Service
 public class MovieService extends com.example.kinoarenaproject.service.Service {
     @Autowired
-    private MovieRepository movieRepository;
+    private CinemaRepository cinemaRepository;
     @Autowired
-    UserRepository userRepository;
+    private MovieRepository movieRepository;
     @Autowired
     CategoryRepository categoryRepository;
     @Autowired
     GenreRepository genreRepository;
     @Autowired
-    HallRepository hallRepository;
-    @Autowired
     ProjectionRepository projectionRepository;
     @Autowired
     private ModelMapper mapper;
 
-    public MovieInfoDTO add(AddMovieDTO movieDTO, int userId) {
-        if (!admin(userId)) {
-            throw new UnauthorizedException("Unauthorized role");
-        }
-        Category category = checkOptionalIsPresent(categoryRepository.findById(movieDTO.getCategoryId()), "non-existent category");
-        Genre genre = checkOptionalIsPresent(genreRepository.findById(movieDTO.getGenreId()), "non-existent genre");
 
-        if (movieDTO.getTitle() == null ||
-                movieDTO.getDescription() == null ||
-                movieDTO.getDuration() == 0 ||
-                movieDTO.getPremiere() == null) {
-            throw new BadRequestException("Incomplete data!");
-        }
 
-        Movie movie = mapper.map(movieDTO, Movie.class);
+    public MovieInfoDTO addMovie(int userId, AddMovieDTO addMovieDTO) {
+        // ADMIN
+        User u=ifPresent(userRepository.findById(userId));
+        if(!admin(userId)){
+            throw new UnauthorizedException("Unauthorised");
+        }
+        Movie movie=mapper.map(addMovieDTO,Movie.class);
+        movieRepository.save(movie);
+        return mapper.map(movie,MovieInfoDTO.class);
+    }
+
+    public MovieInfoDTO editMovie(EditMovieDTO editMovieDTO,int userid,int id ) {
+        // ADMIN
+        User u=ifPresent(userRepository.findById(userid));
+        if(!admin(userid)){
+            throw new UnauthorizedException("Unauthorised");
+        }
+        Category category=ifPresent(categoryRepository.findById(editMovieDTO.getCategory()));
+        Genre genre=ifPresent(genreRepository.findById(editMovieDTO.getGenre()));
+        Movie movie=ifPresent(movieRepository.findById(id));
+        movie.setTitle(editMovieDTO.getTitle());
+        movie.setDescription(editMovieDTO.getDescription());
+        movie.setDuration(editMovieDTO.getDuration());
+        movie.setPremiere(editMovieDTO.getPremiere());
+        movie.setDirector(editMovieDTO.getDirector());
+        movie.setCast(editMovieDTO.getCast());
         movie.setCategory(category);
+        movie.setDirector(editMovieDTO.getDirector());
+        movie.setCast(editMovieDTO.getCast());
         movie.setGenre(genre);
 
         movieRepository.save(movie);
-        return mapper.map(movie, MovieInfoDTO.class);
+        return mapper.map(movie,MovieInfoDTO.class);
+
+
+
+
     }
 
-    public MovieInfoDTO edit(EditMovieDTO movieDTO, int id, int userId) {
-        if (!admin(userId)) {
-            throw new UnauthorizedException("Unauthorized role");
-        }
-        Movie movie = checkOptionalIsPresent(movieRepository.findById(id), "non-existent movie");
-        Category category = checkOptionalIsPresent(categoryRepository.findById(movieDTO.getCategory()), "non-existent category");
-        Genre genre = checkOptionalIsPresent(genreRepository.findById(movieDTO.getGenre()), "non-existent genre");
-
-        setIfNotNull(movieDTO.getTitle(), title -> movie.setTitle(title));
-        setIfNotNull(movieDTO.getDescription(), description -> movie.setDescription(description));
-        setIfNotNull(movieDTO.getDuration(), duration -> movie.setDuration(duration));
-        setIfNotNull(movieDTO.getPremiere(), premiere -> movie.setPremiere(premiere));
-        setIfNotNull(movieDTO.getDirector(), director -> movie.setDirector(director));
-        setIfNotNull(movieDTO.getCast(), cast -> movie.setCast(cast));
-        setIfNotNull(category, category1 -> movie.setCategory(category1));
-        setIfNotNull(genre, genre1 -> movie.setGenre(genre1));
-
-        movieRepository.save(movie);
-        return mapper.map(movie, MovieInfoDTO.class);
+    public MovieInfoDTO getMovieById(int id) {
+        Movie movie=ifPresent(movieRepository.findById(id));
+        return mapper.map(movie,MovieInfoDTO.class);
     }
 
-    @Transactional
-    public MovieInfoDTO remove(int id, int userId) {
-        if (!admin(userId)) {
-            throw new UnauthorizedException("Unauthorized role!");
-        }
-        Movie movie = checkOptionalIsPresent(movieRepository.findById(id), "non-existent movie");
-        List<Projection> projections = projectionRepository.findByMovie(Optional.of(movie));
-        for (Projection projection : projections) {
-            projectionRepository.delete(projection);
-        }
-        MovieInfoDTO movieInfoDTO = mapper.map(movie, MovieInfoDTO.class);
-        movie.setGenre(null);
-        movie.setCategory(null);
+    public Page<MovieInfoDTO> getAllMovies(int userId, int page, int size) {
+        Pageable pageable= PageRequest.of(page,size);
+        return movieRepository.findAll(pageable)
+                .map(movie -> mapper.map(movie,MovieInfoDTO.class));
+    }
+
+    public MovieInfoDTO removeMovie(int id, int userId) {
+        //ADMIN
+        Movie movie=ifPresent(movieRepository.findById(id));
         movieRepository.delete(movie);
-        return movieInfoDTO;
+        return mapper.map(movie,MovieInfoDTO.class);
     }
 
-    public MovieDTO getById(int id) {
-        Movie movie = checkOptionalIsPresent(movieRepository.findById(id), "non-existent movie");
-        MovieDTO movieDTO = mapper.map(movie, MovieDTO.class);
-        return movieDTO;
-    }
+    public MovieWithProjectionListDTO filterByDate(MovieFilterDateDTO movieFilterDateDTO) {
+        Movie movie=ifPresent(movieRepository.findById(movieFilterDateDTO.getId()));
+        Cinema cinema=ifPresent(cinemaRepository.findById(movieFilterDateDTO.getCinemaId()));
+        List<Projection>projections =projectionRepository.findAllByCinemaDateMovie(cinema.getId(),movieFilterDateDTO.getDate(),movie.getId());
 
-    public Page<MovieDTO> getAll(Pageable pageable) {
-        Page<Movie> moviesPage = movieRepository.findAll(pageable);
-        List<MovieDTO> movies = moviesPage.getContent()
-                .stream()
-                .map(m -> mapper.map(m, MovieDTO.class))
-                .collect(Collectors.toList());
-        return new PageImpl<>(movies, pageable, moviesPage.getTotalElements());
-    }
+        MovieWithProjectionListDTO movieWithProjectionListDTO=mapper.map(movie,MovieWithProjectionListDTO.class);
+        List<ProjectionDTO>list=new ArrayList<>();
+        for (Projection p:projections) {
+            list.add(mapper.map(p, ProjectionDTO.class));
+        }
+        movieWithProjectionListDTO.setProjectionDTOS(list);
+        return movieWithProjectionListDTO;
 
-    public MovieInfoDTO getInfo(int id) {
-        Movie movie = checkOptionalIsPresent(movieRepository.findById(id), "non-existent movie");
-        return mapper.map(movie, MovieInfoDTO.class);
-    }
-
-    public List<AddMovieDTO> filterByGenre(int id) {
-        Genre genre = checkOptionalIsPresent(genreRepository.findById(id), "non-existent genre");
-        List<Movie> movies = new ArrayList<>();
-        movies.addAll(movieRepository.findByGenre(genre));
-        return movies.stream()
-                .map(m -> mapper.map(m, AddMovieDTO.class))
-                .peek(addMovieDTO -> addMovieDTO.setGenreId(id))
-                .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,6 @@
 package com.example.kinoarenaproject.Interseptor;
 
-import com.example.kinoarenaproject.controller.Constants;
+import com.example.kinoarenaproject.controller.Util;
 import com.example.kinoarenaproject.model.entities.User;
 import com.example.kinoarenaproject.model.exceptions.UnauthorizedException;
 import com.example.kinoarenaproject.model.repositories.UserRepository;
@@ -34,14 +34,12 @@ UserRepository userRepository;
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         User user = null;
         String requestURI = request.getRequestURI();
-        if(request.getSession().getAttribute(Constants.LOGGED_ID)!=null){
+        if(request.getSession().getAttribute(Util.LOGGED_ID)!=null){
             System.out.println("1st");
-            int id = (int) request.getSession().getAttribute(Constants.LOGGED_ID);
-//            Assert.notNull(userService);
-//            Assert.notNull(userRepository);
+            int id = (int) request.getSession().getAttribute(Util.LOGGED_ID);
             user = userService.userById(id);
-            if ( ( (user.getRole_name().equals(Constants.USER))) && (requestURI.endsWith("/delete") ) )  {
-                System.out.println("Secoond Inters");
+            if ( ( (user.getRole_name().equals(Util.USER))) && (requestURI.endsWith("/delete") ) )  {
+                System.out.println("Second Inters");
                 throw new UnauthorizedException("You have to be ADMIN");
             }
 

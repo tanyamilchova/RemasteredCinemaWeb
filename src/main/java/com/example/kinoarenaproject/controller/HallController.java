@@ -39,7 +39,7 @@ public class HallController extends AbstractController{
         return hall;
     }
 
-    @GetMapping("/halls/{id}/delete")
+    @GetMapping("/halls/{id}")
     public HallDTO getById(@PathVariable int id){
         return hallService.getById(id);
     }
@@ -49,6 +49,7 @@ public class HallController extends AbstractController{
         int userId=loggedId(session);
         return  hallService.remove(id,userId);
     }
+
 
 
 

@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "movies")
 @Table
@@ -38,4 +40,9 @@ public class Movie {
     @OneToOne
     @JoinColumn(name = "genre_id")
     private Genre genre;
+
+
+    @OneToMany(mappedBy = "movie",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Projection> projections=new ArrayList<>();
+
 }

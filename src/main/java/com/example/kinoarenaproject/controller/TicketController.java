@@ -15,26 +15,22 @@ public class TicketController extends AbstractController {
     @Autowired
     private TicketService ticketService;
 
+
     @GetMapping("/tickets/{id}")
-    public TicketInfoDTO getById(@PathVariable int id, HttpSession session) {
-        int idUser = loggedId(session);
-        return ticketService.getTicketById(id, idUser);
+    public TicketInfoDTO getById(@PathVariable int id,HttpSession session){
+        int userId=loggedId(session);
+        return ticketService.getTicketById(id,userId);
     }
 
-//    @PostMapping("/tickets")
-//    public TicketInfoDTO book(@RequestBody @Valid TicketBookDTO dto, HttpSession session) {
-//        return ticketService.book(dto, loggedId(session));
-//    }
     @PostMapping("/tickets")
     public TicketInfoDTO buyTicket(@RequestBody TicketBookDTO ticketBuyDTO,HttpSession session){
         return ticketService.buyTicket(ticketBuyDTO, loggedId(session));
     }
-    @GetMapping("tickets")
-    public HashSet<TicketInfoDTO> getAll(HttpSession session){
 
-       int id=loggedId(session);
-       HashSet<TicketInfoDTO>hashSet=ticketService.getAllTicketsOfUser(id);
-        return hashSet;
+    @GetMapping("/tickets")
+    public HashSet<TicketInfoDTO> getAll(HttpSession session){
+        int id=loggedId(session);
+        return ticketService.getAllTicketsOfUser(id);
     }
 
 }

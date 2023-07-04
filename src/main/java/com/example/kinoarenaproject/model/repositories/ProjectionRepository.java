@@ -24,16 +24,6 @@ public interface ProjectionRepository extends JpaRepository<Projection, Integer>
 
     List<Projection> findByMovieId(int mofivie);
 
-//    @Query(value = "SELECT p.id, p.movie_id, p.hall_id, p.date, p.price, p.start_time FROM projections AS p JOIN halls AS h ON p.hall_id = h.id WHERE h.cinema_id = :cinemaId", nativeQuery = true)
-//    List<Projection> getProjectionsByCinema(@Param("cinemaId") int cinemaId);
-
-//    @Query(value = "SELECT p.id, p.movie_id, p.hall_id, p.date, p.price, p.start_time FROM projections AS p JOIN halls AS h ON p.hall_id = h.id WHERE h.cinema_id = :cinemaId AND p.movie_id = :movieId", nativeQuery = true)
-//    List<Projection> getProjectionsByCinemaAndMovie(@Param("cinemaId") int cinemaId, @Param("movieId") int movieId);
-
-
-
-//    @Query(value =                       "SELECT * FROM projections AS p JOIN halls as h ON h.id=p.hall_id JOIN cinemas AS c ON h.cinema_id =c.id WHERE cinema_id=:cinemaId AND movie_id= :movieId",nativeQuery = true)
-//    HashSet<Projection> getProjectionByCinemaAndMovie(@Param("cinemaId")int cinemaId, @Param("movieId")int movieId);
 
     @Query(value = "SELECT p.id AS projectionId, p.* FROM projections AS p JOIN halls AS h ON h.id = p.hall_id JOIN cinemas AS c ON h.cinema_id = c.id WHERE cinema_id = :cinemaId AND movie_id = :movieId", nativeQuery = true)
     HashSet<Projection> getProjectionByCinemaAndMovie(@Param("cinemaId") int cinemaId, @Param("movieId") int movieId);
@@ -47,4 +37,9 @@ public interface ProjectionRepository extends JpaRepository<Projection, Integer>
 
     @Query(value = "SELECT COUNT(*) FROM projections AS p JOIN halls AS h ON p.hall_id=h.id JOIN cinemas AS c ON h.cinema_id=c.id WHERE p.date=:date AND p.start_time= :startTime AND p.hall_id=:hallId AND c.id=:id", nativeQuery = true)
     int countByDateAndStartTimeAndHallAndCinema(@Param("date") LocalDate date, @Param("startTime") LocalTime time, @Param("hallId") int hallId, @Param("id") int cinemaId);
+
+
+    @Query(value = "SELECT p.* FROM projections AS p JOIN movies AS m ON p.movie_id=m.id JOIN halls AS h ON p.hall_id=h.id JOIN cinemas AS c ON h.cinema_id=c.id WHERE c.id=:cinemaId AND date=:date AND m.id=:movieId ",nativeQuery = true)
+    List<Projection>findAllByCinemaDateMovie(@Param("cinemaId") int cinemaId,@Param("date")LocalDate localDate,@Param("movieId") int movieId);
+
 }

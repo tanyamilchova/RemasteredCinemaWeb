@@ -1,7 +1,8 @@
 package com.example.kinoarenaproject.service;
 
-import com.example.kinoarenaproject.controller.ValidationUtils;
+import com.example.kinoarenaproject.controller.Util;
 import com.example.kinoarenaproject.model.DTOs.*;
+import com.example.kinoarenaproject.model.entities.City;
 import com.example.kinoarenaproject.model.entities.User;
 import com.example.kinoarenaproject.model.exceptions.BadRequestException;
 import com.example.kinoarenaproject.model.exceptions.NotFoundException;
@@ -36,17 +37,17 @@ public class UserService extends com.example.kinoarenaproject.service.Service {
 
     public UserWithoutPasswordDTO login(LoginDTO loginData) {
 
-        Optional<User> opt = userRepository.findByEmail(loginData.getEmail());
-        if (!opt.isPresent()) {
-            throw new UnauthorizedException("Wrong credentials");
-        }
-        if (!userRepository.existsByEmail(loginData.getEmail())) {
-            throw new UnauthorizedException("Wrong credentials");
-        }
-        User u = opt.get();
+//        Optional<User> opt = userRepository.findByEmail(loginData.getEmail());
+//        if (!opt.isPresent()) {
+//            throw new UnauthorizedException("Wrong credentials");
+//        }
+//        if (!userRepository.existsByEmail(loginData.getEmail())) {
+//            throw new UnauthorizedException("Wrong credentials");
+//        }
+//        User u = opt.get();
+        User u=ifPresent(userRepository.findByEmail(loginData.getEmail()));
         if (! u.isEnable()) {
-
-            throw new UnauthorizedException("Wrong credentials");
+            throw new UnauthorizedException("Confirm email-confirmation link was sent to your email");
         }
         if(passwordEncoder.matches(loginData.getPassword(), u.getPassword())){
             System.out.println();
@@ -55,7 +56,6 @@ public class UserService extends com.example.kinoarenaproject.service.Service {
         else {
             throw new UnauthorizedException("Wrong credentials");
             }
-
     }
 
 
@@ -63,7 +63,7 @@ public class UserService extends com.example.kinoarenaproject.service.Service {
         if (!registerData.getPassword().equals((registerData).getConfirmPassword())) {
             throw new BadRequestException("Password mismatched");
         }
-        if(ValidationUtils.validRegisterData(registerData)){
+        if(Util.validRegisterData(registerData)){
             if (userRepository.existsByEmail(registerData.getEmail())) {
                 throw new BadRequestException("Email already exist");
             }
@@ -112,7 +112,7 @@ public class UserService extends com.example.kinoarenaproject.service.Service {
     }
 
     public UserWithoutPasswordDTO changePassword(ChangePassDTO changePassData, int id) {
-        if(! ValidationUtils.isValidPassword(changePassData.getNewPassword())) {
+        if(! Util.isValidPassword(changePassData.getNewPassword())) {
             throw new UnauthorizedException("Week password");
         }
         Optional<User> opt = userRepository.findById(id);
@@ -129,7 +129,7 @@ public class UserService extends com.example.kinoarenaproject.service.Service {
 
     public UserWithoutPasswordDTO editProfile(EditProfileDTO editProfileData, int id) {
 
-        if(!ValidationUtils.validEditProfilData(editProfileData)){
+        if(!Util.validEditProfilData(editProfileData)){
             throw new BadRequestException("Wrong input data");
         }
         if (userRepository.existsByEmail(editProfileData.getEmail()) &&
@@ -137,22 +137,19 @@ public class UserService extends com.example.kinoarenaproject.service.Service {
             throw new UnauthorizedException("Email already exist");
         }
 
-        if(! ValidationUtils.validEditData(editProfileData)){
+        if(! Util.validEditData(editProfileData)){
             throw new UnauthorizedException("Input data not valid");
         }
-        Optional<User> opt = userRepository.findById(id);
-        if (!opt.isPresent()) {
-            throw new UnauthorizedException("Wrong credentials");
-        }
 
-        User u = opt.get();
+        User u=ifPresent(userRepository.findById(id));
+        City city=ifPresent(cityRepository.findById(editProfileData.getCity_id()));
         u.setPhone_number(editProfileData.getPhone_number());
         u.setEmail(editProfileData.getEmail());
         u.setBirth_date(editProfileData.getBirth_date());
         u.setFirst_name(editProfileData.getFirst_name());
         u.setLast_name(editProfileData.getLast_name());
         u.setGender(editProfileData.getGender());
-        u.setCity_id(editProfileData.getCity_id());
+        u.setCity_id(city.getId());
 
         userRepository.save(u);
         return mapper.map(u, UserWithoutPasswordDTO.class);

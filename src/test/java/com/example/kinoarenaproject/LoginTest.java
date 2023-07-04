@@ -41,6 +41,7 @@ public class LoginTest {
        when(userRepository.findByEmail(loginData.getEmail())).thenReturn(Optional.of(user));
        lenient().when(passwordEncoder.matches(loginData.getPassword(), user.getPassword())).thenReturn(true);
 
+
        assertThrows( UnauthorizedException.class,()->{
             userService.login(loginData);});
 

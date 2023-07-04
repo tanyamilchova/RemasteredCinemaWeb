@@ -35,12 +35,7 @@ public class HallService extends com.example.kinoarenaproject.service.Service {
         if(! admin(id)){
             throw new UnauthorizedException("Unauthorized role");
         }
-        Optional<Cinema>opt=cinemaRepository.findById(addData.getCinema_id());
-        if(!opt.isPresent()){
-            throw new NotFoundException("Cinema not found");
-        }
-        Cinema cinema= opt.get();
-
+        Cinema cinema=ifPresent(cinemaRepository.findById(addData.getCinema_id()));
         Hall hall = mapper.map(addData,Hall.class);
         hall.setCinema(cinema);
         hallRepository.save(hall);
@@ -65,11 +60,7 @@ public class HallService extends com.example.kinoarenaproject.service.Service {
         if(! admin(userId)){
             throw new UnauthorizedException("Unauthorized role");
         }
-        Optional<Hall> opt = hallRepository.findById(id);
-        if (!opt.isPresent()) {
-            throw new UnauthorizedException("Wrong credentials");
-        }
-        Hall h = opt.get();
+        Hall h=ifPresent(hallRepository.findById(id));
         h.setType_id(editData.getType_id());
         h.setRows(editData.getRows());
         h.setColumns(editData.getColumns());
@@ -80,13 +71,14 @@ public class HallService extends com.example.kinoarenaproject.service.Service {
 
 
     public HallDTO getById(int id) {
-        Optional<Hall> opt = hallRepository.findById(id);
-        if (opt.isPresent()) {
-            Hall h = opt.get();
+//        Optional<Hall> opt = hallRepository.findById(id);
+//        if (opt.isPresent()) {
+//            Hall h = opt.get();
+        Hall h=ifPresent(hallRepository.findById(id));
             return mapper.map(h, HallDTO.class);
-        } else {
-            throw new NotFoundException("Hall not found");
-        }
+//        } else {
+//            throw new NotFoundException("Hall not found");
+//        }
     }
 
 

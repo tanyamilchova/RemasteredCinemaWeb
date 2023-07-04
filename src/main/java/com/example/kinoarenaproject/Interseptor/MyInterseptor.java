@@ -1,6 +1,6 @@
 package com.example.kinoarenaproject.Interseptor;
 
-import com.example.kinoarenaproject.controller.Constants;
+import com.example.kinoarenaproject.controller.Util;
 import com.example.kinoarenaproject.model.exceptions.UnauthorizedException;
 import com.example.kinoarenaproject.model.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ public class MyInterseptor implements HandlerInterceptor, Ordered {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        if(request.getSession().getAttribute(Constants.LOGGED_ID)==null){
+        if(request.getSession().getAttribute(Util.LOGGED_ID)==null){
             String requestURI=request.getRequestURI();
             if(! ( requestURI.endsWith("/users/login") || requestURI.endsWith("/users/register") || requestURI.contains("/confirm")) ){
                 throw new UnauthorizedException("You have to login first");

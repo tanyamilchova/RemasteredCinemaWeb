@@ -39,12 +39,7 @@ public class CinemaService extends com.example.kinoarenaproject.service.Service 
             throw new UnauthorizedException("Unauthorized role");
         }
         Cinema cin = mapper.map(addCinema, Cinema.class);
-
-        Optional<City>opt=cityRepository.findById(addCinema.getCity_id());
-        if(!opt.isPresent()){
-            throw new NotFoundException("Cinema not found");
-        }
-        City city= opt.get();
+        City city=ifPresent(cityRepository.findById(addCinema.getCity_id()));
         cin.setCity(city);
         cinemaRepository.save(cin);
 

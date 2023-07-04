@@ -17,8 +17,8 @@ public class UserController extends AbstractController {
     @PostMapping("/users/login")
     public UserWithoutPasswordDTO login(@RequestBody LoginDTO loginData,HttpSession session){
         UserWithoutPasswordDTO u=userService.login(loginData);
-        session.setAttribute(Constants.LOGGED, true);
-        session.setAttribute(Constants.LOGGED_ID, u.getId());
+        session.setAttribute(Util.LOGGED, true);
+        session.setAttribute(Util.LOGGED_ID, u.getId());
 
         return u;
     }
@@ -46,11 +46,11 @@ public class UserController extends AbstractController {
     }
 
 
-    @PutMapping("/users/edit")
+    @PutMapping("/users")
     public UserWithoutPasswordDTO editProfile(@RequestBody EditProfileDTO editProfileData,HttpSession session){
 //        int id=loggedId(session);
    // нова проба
-    int id=(int) session.getAttribute(Constants.LOGGED_ID);
+    int id=(int) session.getAttribute(Util.LOGGED_ID);
 
 //        boolean logged = (boolean) session.getAttribute(Constants.LOGGED);
 //        if (!logged) {

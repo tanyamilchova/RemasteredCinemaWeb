@@ -2,21 +2,23 @@ package com.example.kinoarenaproject.controller;
 
 
     import com.example.kinoarenaproject.model.DTOs.EditProfileDTO;
-    import com.example.kinoarenaproject.model.DTOs.LoginDTO;
     import com.example.kinoarenaproject.model.DTOs.RegisterDTO;
     import com.example.kinoarenaproject.model.DTOs.TicketBookDTO;
     import com.example.kinoarenaproject.model.entities.Hall;
     import com.example.kinoarenaproject.model.entities.Projection;
     import com.example.kinoarenaproject.model.exceptions.BadRequestException;
     import com.example.kinoarenaproject.model.exceptions.UnauthorizedException;
-    import jakarta.servlet.http.HttpSession;
 
     import java.time.LocalDate;
-    import java.time.LocalDateTime;
     import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-    public class ValidationUtils {
+    public class Util {
+
+        public static final String LOGGED="LOGGED";
+        public static final String LOGGED_ID="LOGGED_ID";
+        public  static final String USER="USER";
+        public static final String ADMIN="ADMIN";
 
         private static final String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
         private static final String PHONE_REGEX = "^(\\+\\d{1,2})?\\s*(\\d{10})$";

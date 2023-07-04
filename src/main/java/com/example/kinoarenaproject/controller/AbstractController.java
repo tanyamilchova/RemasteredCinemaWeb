@@ -54,10 +54,10 @@ public abstract class AbstractController {
 //        if(session.getAttribute(Constants.LOGGED_ID)==null){
 //            throw new UnauthorizedException("You have to login first");
 //        }
-        return (int) session.getAttribute(Constants.LOGGED_ID);
+        return (int) session.getAttribute(Util.LOGGED_ID);
     }
     protected boolean validSession(HttpSession session){
-        if(session.getAttribute(Constants.LOGGED)==null){
+        if(session.getAttribute(Util.LOGGED)==null){
             throw new UnauthorizedException("Invalid session. Login first.");
         }
         return true;
