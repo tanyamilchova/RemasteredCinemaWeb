@@ -61,10 +61,8 @@ public class ProjectionService extends com.example.kinoarenaproject.service.Serv
        return hashSet;
     }
 
-    public ProjectionDTO add(AddProjectionDTO addData, int id) {
-        if(!admin(id)){
-            throw new UnauthorizedException("Unauthorised");
-        }
+    public ProjectionDTO add(AddProjectionDTO addData) {
+
         Hall hall=ifPresent(hallRepository.findById(addData.getHallId()));
         Movie movie=ifPresent(movieRepository.findById(addData.getMovieId()));
         Cinema cinema=ifPresent(cinemaRepository.findById(hall.getCinema().getId()));
@@ -84,11 +82,8 @@ public class ProjectionService extends com.example.kinoarenaproject.service.Serv
         return mapper.map(p,ProjectionDTO.class);
     }
 
-    public ProjectionDTO edit(EditProjectionDTO editData, int id, int userId) {
-        System.out.println("EditService");
-        if(!admin(userId)){
-            throw new UnauthorizedException("Unauthorised");
-        }
+    public ProjectionDTO edit(EditProjectionDTO editData, int id) {
+
         Hall hall=(ifPresent(hallRepository.findById(editData.getHallId())));
         Movie movie=(ifPresent(movieRepository.findById(editData.getMovieId())));
         Projection projection=ifPresent(projectionRepository.findById(id));
@@ -105,11 +100,8 @@ public class ProjectionService extends com.example.kinoarenaproject.service.Serv
 
     }
 
-    public ProjectionDTO remove(int id, int userId) {
-        User user=ifPresent(userRepository.findById(userId));
-        if(!admin(userId)){
-            throw new UnauthorizedException ("Unauthorised");
-        }
+    public ProjectionDTO remove(int id) {
+
         Projection projection=ifPresent(projectionRepository.findById(id));
         projectionRepository.delete(projection);
         return mapper.map(projection,ProjectionDTO.class);

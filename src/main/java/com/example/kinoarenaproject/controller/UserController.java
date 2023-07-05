@@ -48,20 +48,12 @@ public class UserController extends AbstractController {
 
     @PutMapping("/users")
     public UserWithoutPasswordDTO editProfile(@RequestBody EditProfileDTO editProfileData,HttpSession session){
-//        int id=loggedId(session);
-   // нова проба
     int id=(int) session.getAttribute(Util.LOGGED_ID);
-
-//        boolean logged = (boolean) session.getAttribute(Constants.LOGGED);
-//        if (!logged) {
-//            throw new UnauthorizedException("You have to login");
-//        }
-
-
-        UserWithoutPasswordDTO u=userService.editProfile(editProfileData,id);
+    UserWithoutPasswordDTO u=userService.editProfile(editProfileData,id);
         return u;
     }
-    @DeleteMapping("/users/{id}/delete")
+
+    @DeleteMapping("/admin/users/{id}")
     public UserWithoutPasswordDTO delete(@PathVariable int id, HttpSession session){
         int adminId=loggedId(session);
         return  userService.delete(adminId,id);
@@ -74,6 +66,4 @@ public class UserController extends AbstractController {
             return "Invalid confirmation";
         }
     }
-
-
 }

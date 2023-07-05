@@ -17,29 +17,26 @@ public class MovieController extends AbstractController {
 
 
 
-
-    //--------------------------------------------------------------------------
-    @PostMapping("/movies")
-    public MovieInfoDTO addMovie(@RequestBody @Valid AddMovieDTO addMovieDTO,HttpSession session){
-        int userId=loggedId(session);
-        return  movieService.addMovie(userId,addMovieDTO);
+    @PostMapping("/admin/movies")
+    public MovieInfoDTO addMovie(@RequestBody @Valid AddMovieDTO addMovieDTO){
+        return  movieService.addMovie(addMovieDTO);
     }
-    @PutMapping("movies/{id}")
-    public MovieInfoDTO editMovie(@RequestBody EditMovieDTO editMovieDTO,@PathVariable int id,HttpSession session){
-        int userid=loggedId(session);
-        return movieService.editMovie(editMovieDTO,userid,id);
+    @PutMapping("/admin/movies/{id}")
+    public MovieInfoDTO editMovie(@RequestBody EditMovieDTO editMovieDTO,@PathVariable int id){
+        return movieService.editMovie(editMovieDTO,id);
     }
     @GetMapping("/movies/{id}")
     public MovieInfoDTO getMovieById( @PathVariable int id){
         return movieService.getMovieById(id);
     }
+
     @GetMapping("/movies/all")
     public Page<MovieInfoDTO> getAllMovies(@RequestParam (defaultValue = "0")int page,
                                            @RequestParam (defaultValue = "10")int size,HttpSession session){
         int userId=loggedId(session);
         return movieService.getAllMovies(userId,page,size);
     }
-    @DeleteMapping("/movies/{id}")
+    @DeleteMapping("/admin/movies/{id}")
     public MovieInfoDTO removeMovie(@PathVariable int id,HttpSession session){
         int userId=loggedId(session);
         return movieService.removeMovie(id,userId);

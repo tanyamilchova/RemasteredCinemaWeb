@@ -38,7 +38,7 @@ UserRepository userRepository;
             System.out.println("1st");
             int id = (int) request.getSession().getAttribute(Util.LOGGED_ID);
             user = userService.userById(id);
-            if ( ( (user.getRole_name().equals(Util.USER))) && (requestURI.endsWith("/delete") ) )  {
+            if ( ( (user.getRole_name().equals(Util.USER))) && ( requestURI.startsWith("/admin")) )  {
                 System.out.println("Second Inters");
                 throw new UnauthorizedException("You have to be ADMIN");
             }

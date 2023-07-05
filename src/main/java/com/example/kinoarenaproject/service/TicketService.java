@@ -30,9 +30,6 @@ public class TicketService extends com.example.kinoarenaproject.service.Service 
     private ModelMapper mapper;
 
 
-
-
-    //------------------------------------------------------------
      public TicketInfoDTO buyTicket(TicketBookDTO ticketBuyDTO, int loggedId) {
 
 
@@ -59,11 +56,8 @@ public class TicketService extends com.example.kinoarenaproject.service.Service 
         return mapper.map(ticket,TicketInfoDTO.class);
         }
 
-    public TicketInfoDTO getTicketById(int id, int userId) {
-        User user=userById(userId);
-        if(!admin(userId)){
-            throw new UnauthorizedException("Unauthorised");
-        }
+    public TicketInfoDTO getTicketById(int id) {
+
         Ticket ticket=ifPresent(ticketRepository.findById(id));
         return mapper.map(ticket,TicketInfoDTO.class);
     }

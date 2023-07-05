@@ -17,9 +17,9 @@ public class TicketController extends AbstractController {
 
 
     @GetMapping("/tickets/{id}")
-    public TicketInfoDTO getById(@PathVariable int id,HttpSession session){
-        int userId=loggedId(session);
-        return ticketService.getTicketById(id,userId);
+    public TicketInfoDTO getById(@PathVariable int id){
+
+        return ticketService.getTicketById(id);
     }
 
     @PostMapping("/tickets")

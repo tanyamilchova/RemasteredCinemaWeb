@@ -15,10 +15,10 @@ public class CinemaController extends AbstractController{
     @Autowired
     private CinemaService cinemaService;
 
-    @PostMapping("/cinemas")
-    public CinemaDTO add(@RequestBody AddCinemaDTO addData, HttpSession session){
-        int id=loggedId(session);
-        CinemaDTO cinema = cinemaService.add(addData, id);
+    @PostMapping("/admin/cinemas")
+    public CinemaDTO add(@RequestBody AddCinemaDTO addData){
+
+        CinemaDTO cinema = cinemaService.add(addData);
         return cinema;
     }
 
@@ -29,10 +29,10 @@ public class CinemaController extends AbstractController{
    }
 
 
-   @PutMapping("/cinemas/{id}")
-   public CinemaDTO edit(@RequestBody CinemaDTO editData,@PathVariable int id, HttpSession session){
-        int userId=loggedId(session);
-        return cinemaService.edit(editData,id,userId);
+   @PutMapping("/admin/cinemas/{id}")
+   public CinemaDTO edit(@RequestBody CinemaDTO editData,@PathVariable int id){
+
+        return cinemaService.edit(editData,id);
 
    }
 
@@ -49,10 +49,10 @@ public class CinemaController extends AbstractController{
         return cinemas;
    }
 
-   @DeleteMapping("/cinemas/{id}")
-   public CinemaDTO remove(@PathVariable int id, HttpSession session){
-        int userId=loggedId(session);
-       return  cinemaService.remove(id,userId);
+   @DeleteMapping("/admin/cinemas/{id}")
+   public CinemaDTO remove(@PathVariable int id){
+
+       return  cinemaService.remove(id);
    }
 
 

@@ -18,7 +18,5 @@ private AdminInterseptor adminInterseptor;
         registry.addInterceptor(new MyInterseptor());
 
         registry.addInterceptor(adminInterseptor);
-//                .excludePathPatterns("/users/register");
-
     }
 }

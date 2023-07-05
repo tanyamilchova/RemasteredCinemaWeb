@@ -17,10 +17,10 @@ public class HallController extends AbstractController{
     HallService hallService;
 
 
-    @PostMapping("/halls")
-    public HallDTO add(@RequestBody AddHallDTO addData, HttpSession session){
-        int id=loggedId(session);
-        HallDTO hall=hallService.add(addData,id);
+    @PostMapping("/admin/halls")
+    public HallDTO add(@RequestBody AddHallDTO addData){
+
+        HallDTO hall=hallService.add(addData);
 
         return hall;
     }
@@ -32,10 +32,10 @@ public class HallController extends AbstractController{
     }
 
 
-    @PutMapping("/halls/{id}")
-    public HallDTO edit(@RequestBody HallDTO editData, @PathVariable int id, HttpSession session){
-        int userId=loggedId(session);
-        HallDTO hall=hallService.edit(editData,id,userId);
+    @PutMapping("/admin/halls/{id}")
+    public HallDTO edit(@RequestBody HallDTO editData, @PathVariable int id){
+
+        HallDTO hall=hallService.edit(editData,id);
         return hall;
     }
 
@@ -44,10 +44,10 @@ public class HallController extends AbstractController{
         return hallService.getById(id);
     }
 
-    @DeleteMapping("/halls/{id}")
-    public HallDTO remove(@PathVariable int id, HttpSession session){
-        int userId=loggedId(session);
-        return  hallService.remove(id,userId);
+    @DeleteMapping("/admin/halls/{id}")
+    public HallDTO remove(@PathVariable int id){
+
+        return  hallService.remove(id);
     }
 
 

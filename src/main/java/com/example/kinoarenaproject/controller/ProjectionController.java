@@ -16,27 +16,26 @@ public class ProjectionController extends AbstractController {
     @Autowired
     private ProjectionService projectionService;
 
-    //-------------------------------------------------------------------------------------------------
-    @PostMapping("projections")
-    public ProjectionDTO add(@RequestBody AddProjectionDTO  addProjectionDTO,HttpSession session){
-        int userId=loggedId(session);
-        return projectionService.add(addProjectionDTO,userId);
+
+    @PostMapping("/admin/projections")
+    public ProjectionDTO add(@RequestBody AddProjectionDTO  addProjectionDTO){
+
+        return projectionService.add(addProjectionDTO);
     }
-    @DeleteMapping("projections/{id}")
-    public ProjectionDTO remove(@PathVariable int id, HttpSession session){
-        int userId=loggedId(session);
-        return projectionService.remove(id,userId);
+    @DeleteMapping("/admin/projections/{id}")
+    public ProjectionDTO remove(@PathVariable int id){
+        return projectionService.remove(id);
     }
+
     @GetMapping("projections/{id}")
     public ProjectionDTO getProjectionById(@PathVariable int id){
         return projectionService.getById(id);
     }
 
-    @PutMapping("projections/{id}")
-    public ProjectionDTO edit(@RequestBody EditProjectionDTO editProjectionDTO,@PathVariable int id, HttpSession session){
-        System.out.println("Controller");
-        int userId=loggedId(session);
-        return projectionService.edit(editProjectionDTO,id,userId);
+    @PutMapping("/admin/projections/{id}")
+    public ProjectionDTO edit(@RequestBody EditProjectionDTO editProjectionDTO,@PathVariable int id){
+
+        return projectionService.edit(editProjectionDTO,id);
 
     }
     @GetMapping("/projections/{id}/avSeats")
@@ -51,7 +50,6 @@ public class ProjectionController extends AbstractController {
     }
     @GetMapping("projections/filter/{id}")
     public HashSet<ProjectionDTO> projectionByCinema(@PathVariable int id){
-
         HashSet<ProjectionDTO>projectionDTOS=projectionService.filterByCinema(id);
         return projectionDTOS;
     }

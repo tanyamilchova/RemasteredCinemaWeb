@@ -30,11 +30,8 @@ public class HallService extends com.example.kinoarenaproject.service.Service {
     @Autowired
     CityRepository cityRepository;
 
-    public HallDTO add(AddHallDTO addData, int id) {
+    public HallDTO add(AddHallDTO addData) {
 
-        if(! admin(id)){
-            throw new UnauthorizedException("Unauthorized role");
-        }
         Cinema cinema=ifPresent(cinemaRepository.findById(addData.getCinema_id()));
         Hall hall = mapper.map(addData,Hall.class);
         hall.setCinema(cinema);
@@ -54,12 +51,8 @@ public class HallService extends com.example.kinoarenaproject.service.Service {
     }
 
 
-    public HallDTO edit(HallDTO editData, int id, int userId) {
+    public HallDTO edit(HallDTO editData, int id) {
 
-        User u = userById(userId);
-        if(! admin(userId)){
-            throw new UnauthorizedException("Unauthorized role");
-        }
         Hall h=ifPresent(hallRepository.findById(id));
         h.setType_id(editData.getType_id());
         h.setRows(editData.getRows());
@@ -71,28 +64,14 @@ public class HallService extends com.example.kinoarenaproject.service.Service {
 
 
     public HallDTO getById(int id) {
-//        Optional<Hall> opt = hallRepository.findById(id);
-//        if (opt.isPresent()) {
-//            Hall h = opt.get();
         Hall h=ifPresent(hallRepository.findById(id));
             return mapper.map(h, HallDTO.class);
-//        } else {
-//            throw new NotFoundException("Hall not found");
-//        }
     }
 
 
-    public HallDTO remove(int id, int userId) {
+    public HallDTO remove(int id) {
 
-        User u = userById(userId);
-        if (! admin(userId)) {
-            throw new UnauthorizedException("Unauthorized role");
-        }
-        Optional <Hall>opt=hallRepository.findById(id);
-        if(!opt.isPresent()){
-            throw new NotFoundException("Hall not found");
-        }
-        Hall h=opt.get();
+        Hall h=ifPresent(hallRepository.findById(id));
         hallRepository.delete(h);
         HallDTO hallDTO=mapper.map(h,HallDTO.class);
         return  hallDTO;

@@ -115,11 +115,12 @@ public class UserService extends com.example.kinoarenaproject.service.Service {
         if(! Util.isValidPassword(changePassData.getNewPassword())) {
             throw new UnauthorizedException("Week password");
         }
-        Optional<User> opt = userRepository.findById(id);
-        if (!opt.isPresent()) {
-            throw new UnauthorizedException("Wrong credentials");
-        }
-        User u = opt.get();
+//        Optional<User> opt = userRepository.findById(id);
+//        if (!opt.isPresent()) {
+//            throw new UnauthorizedException("Wrong credentials");
+//        }
+//        User u = opt.get();
+        User u=ifPresent(userRepository.findById(id));
 
             u.setPassword(passwordEncoder.encode(changePassData.getNewPassword()));
             userRepository.save(u);
@@ -157,15 +158,11 @@ public class UserService extends com.example.kinoarenaproject.service.Service {
 
     public UserWithoutPasswordDTO delete(int adminId, int userId) {
             User user=ifPresent(userRepository.findById(adminId));
-            Optional <User>opt=userRepository.findById(userId);
-            if(!opt.isPresent()){
-                throw new NotFoundException("User not found");
-            }
-            User userToDelete=opt.get();
+            User userToDelete=ifPresent(userRepository.findById(userId));
+
             userRepository.delete(userToDelete);
             return   mapper.map(userToDelete,UserWithoutPasswordDTO.class);
-
-        }
+    }
 
     @Scheduled(fixedRate = 1000*60*5)
     public void deleteUnverifiedUsers() {

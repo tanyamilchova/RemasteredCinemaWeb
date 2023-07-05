@@ -44,23 +44,16 @@ public class MovieService extends com.example.kinoarenaproject.service.Service {
 
 
 
-    public MovieInfoDTO addMovie(int userId, AddMovieDTO addMovieDTO) {
-        // ADMIN
-        User u=ifPresent(userRepository.findById(userId));
-        if(!admin(userId)){
-            throw new UnauthorizedException("Unauthorised");
-        }
+    public MovieInfoDTO addMovie( AddMovieDTO addMovieDTO) {
+
+//        User u=ifPresent(userRepository.findById(userId));
         Movie movie=mapper.map(addMovieDTO,Movie.class);
         movieRepository.save(movie);
         return mapper.map(movie,MovieInfoDTO.class);
     }
 
-    public MovieInfoDTO editMovie(EditMovieDTO editMovieDTO,int userid,int id ) {
-        // ADMIN
-        User u=ifPresent(userRepository.findById(userid));
-        if(!admin(userid)){
-            throw new UnauthorizedException("Unauthorised");
-        }
+    public MovieInfoDTO editMovie(EditMovieDTO editMovieDTO,int id ) {
+
         Category category=ifPresent(categoryRepository.findById(editMovieDTO.getCategory()));
         Genre genre=ifPresent(genreRepository.findById(editMovieDTO.getGenre()));
         Movie movie=ifPresent(movieRepository.findById(id));

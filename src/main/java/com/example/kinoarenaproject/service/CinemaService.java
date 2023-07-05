@@ -33,11 +33,8 @@ public class CinemaService extends com.example.kinoarenaproject.service.Service 
     CityRepository cityRepository;
 
 
-    public CinemaDTO add(AddCinemaDTO addCinema, int id) {
-        User u = userById(id);
-        if (! admin(id)) {
-            throw new UnauthorizedException("Unauthorized role");
-        }
+    public CinemaDTO add(AddCinemaDTO addCinema) {
+
         Cinema cin = mapper.map(addCinema, Cinema.class);
         City city=ifPresent(cityRepository.findById(addCinema.getCity_id()));
         cin.setCity(city);
@@ -47,16 +44,9 @@ public class CinemaService extends com.example.kinoarenaproject.service.Service 
     }
 
 
-    public CinemaDTO edit(CinemaDTO cinemaDto, int id,int userId) {
-        User u = userById(userId);
-        if (!admin(userId)) {
-            throw new UnauthorizedException("Unauthorized role");
-        }
-        Optional<Cinema> opt = cinemaRepository.findById(id);
-        if (!opt.isPresent()) {
-            throw new UnauthorizedException("Wrong credentials");
-        }
-        Cinema c = opt.get();
+    public CinemaDTO edit(CinemaDTO cinemaDto, int id) {
+
+        Cinema c=ifPresent(cinemaRepository.findById(id));
         c.setName(cinemaDto.getName());
         c.setAddress(cinemaDto.getAddress());
         c.setPhone_number(cinemaDto.getPhone_number());
@@ -66,18 +56,10 @@ public class CinemaService extends com.example.kinoarenaproject.service.Service 
 
     }
     @Transactional
-    public CinemaDTO remove(int cinemaId, int userId) {
-        User u = userById(userId);
-        if (!admin(userId)) {
-            throw new UnauthorizedException("Unauthorized role");
-        }
-        Optional <Cinema>opt=cinemaRepository.findById(cinemaId);
-        if(!opt.isPresent()){
-            throw new NotFoundException("Cinema not found");
-        }
-        Cinema c=opt.get();
-        cinemaRepository.delete(c);
+    public CinemaDTO remove(int cinemaId) {
 
+        Cinema c=ifPresent(cinemaRepository.findById(cinemaId));
+        cinemaRepository.delete(c);
         CinemaDTO cDto=mapper.map(c,CinemaDTO.class);
         return  cDto;
     }
@@ -92,15 +74,10 @@ public class CinemaService extends com.example.kinoarenaproject.service.Service 
         return cinemaDTOS;
     }
 
-    public CinemaDTO getById(int id) {
-        Optional<Cinema> opt = cinemaRepository.findById(id);
-            if (opt.isPresent()) {
-                Cinema u = opt.get();
-                return    mapper.map(u, CinemaDTO.class);
 
-            } else {
-                throw new NotFoundException("Cinema not found");
-            }
+    public CinemaDTO getById(int id) {
+        Cinema c=ifPresent(cinemaRepository.findById(id));
+                return    mapper.map(c, CinemaDTO.class);
     }
 
 
