@@ -114,26 +114,7 @@ public class LoginTest {
         user.setEmail(Util.EMAIL);
 
         assertThrows(BadRequestException.class,()->userService.register(registerDTO));
-        //  public UserWithoutPasswordDTO register(RegisterDTO registerData) {
-        //        if (!registerData.getPassword().equals((registerData).getConfirmPassword())) {
-        //            throw new BadRequestException("Password mismatched");
-        //        }
-        //        if(Util.validRegisterData(registerData)){
-        //            if (userRepository.existsByEmail(registerData.getEmail())) {
-        //                throw new BadRequestException("Email already exist");
-        //            }
-        //        } else {
-        //            throw new BadRequestException("Inadequate input for password");
-        //        }
-        //        User u = mapper.map(registerData, User.class);
-        //        u.setDateTimeRegistration(LocalDateTime.now());
-        //        u.setPassword(passwordEncoder.encode(u.getPassword()));
-        //        u.setConfirmatronToken(generateConfirmationToken());
-        //
-        //        userRepository.save(u);
-        //
-        //        sendConfirmationEmail(u);
-        //        return mapper.map(u, UserWithoutPasswordDTO.class);
+        
     }
     @Test
     public void emailExist(){
@@ -149,7 +130,6 @@ public class LoginTest {
          RegisterDTO registerDTO=new RegisterDTO();
         registerDTO.setEmail(Util.WRONG_EMAIL);
 
-        // Create a pattern with the email regex
         Pattern pattern = Pattern.compile(EMAIL_REGEX);
         Matcher matcher = pattern.matcher(registerDTO.getEmail());
         assertFalse(pattern.matcher(registerDTO.getEmail()).matches());
@@ -175,7 +155,7 @@ public class LoginTest {
         Matcher matcher=pattern.matcher(registerDTO.getPassword());
         assertFalse(pattern.matcher(registerDTO.getPassword()).matches());
     }
-
+//--------------------------------------------------------------------------------------------------------------------
 }
 
 
