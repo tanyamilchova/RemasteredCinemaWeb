@@ -10,6 +10,7 @@ package com.example.kinoarenaproject.controller;
     import com.example.kinoarenaproject.model.exceptions.UnauthorizedException;
 
     import java.time.LocalDate;
+    import java.util.Date;
     import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +20,24 @@ import java.util.regex.Pattern;
         public static final String LOGGED_ID="LOGGED_ID";
         public  static final String USER="USER";
         public static final String ADMIN="ADMIN";
+        public static final String EMAIL="EMAIL@abv.bg";
+        public static final String FIRST_NAME="FIRST_NAME";
+        public static final String LAST_NAME="LAST_NAME";
+        public static final String PHONE="0888223344";
+        public static final String INVALID_PHONE="INVALID_PHONE";
+        public static final String PASSWORD="PASSWORD";
+        public static final LocalDate BIRTH_DATE=LocalDate.now().minusYears(24);
+        public static final String GENDER="GENDER";
+        public static final String PROFILE_IMAGE="PROFILE_IMAGE";
+        public static final Integer CITY_ID=1;
+        public static final String  WRONG_EMAIL="WRONG_EMAIL";
+        public static final String  WRONG_PASSWORD="WRONG_PASSWORD";
+        public static final String      CONFIRM_PASSWORD="PASSWORD";
+
+        public static final String ROLE_NAME="ROLE_NAME";
+
+
+
 
         private static final String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
         private static final String PHONE_REGEX = "^(\\+\\d{1,2})?\\s*(\\d{10})$";
