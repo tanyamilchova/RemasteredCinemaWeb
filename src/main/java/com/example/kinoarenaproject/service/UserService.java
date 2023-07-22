@@ -37,14 +37,6 @@ public class UserService extends com.example.kinoarenaproject.service.Service {
 
     public UserWithoutPasswordDTO login(LoginDTO loginData) {
 
-//        Optional<User> opt = userRepository.findByEmail(loginData.getEmail());
-//        if (!opt.isPresent()) {
-//            throw new UnauthorizedException("Wrong credentials");
-//        }
-//        if (!userRepository.existsByEmail(loginData.getEmail())) {
-//            throw new UnauthorizedException("Wrong credentials");
-//        }
-//        User u = opt.get();
         User u=ifPresent(userRepository.findByEmail(loginData.getEmail()));
         if (! u.isEnable()) {
             throw new UnauthorizedException("Confirm email-confirmation link was sent to your email");

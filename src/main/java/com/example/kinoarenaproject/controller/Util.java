@@ -25,14 +25,15 @@ import java.util.regex.Pattern;
         public static final String LAST_NAME="LAST_NAME";
         public static final String PHONE="0888223344";
         public static final String INVALID_PHONE="INVALID_PHONE";
-        public static final String PASSWORD="PASSWORD";
+        public static final String PASSWORD="PASSWORD1a*11@@";
         public static final LocalDate BIRTH_DATE=LocalDate.now().minusYears(24);
         public static final String GENDER="GENDER";
         public static final String PROFILE_IMAGE="PROFILE_IMAGE";
         public static final Integer CITY_ID=1;
         public static final String  WRONG_EMAIL="WRONG_EMAIL";
         public static final String  WRONG_PASSWORD="WRONG_PASSWORD";
-        public static final String      CONFIRM_PASSWORD="PASSWORD";
+        public static final String CONFIRM_PASSWORD="PASSWORD1a*11@@";
+        public static final String CONFIRMATION_TOKEN="CONFIRMATION_TOKEN";
 
         public static final String ROLE_NAME="ROLE_NAME";
 

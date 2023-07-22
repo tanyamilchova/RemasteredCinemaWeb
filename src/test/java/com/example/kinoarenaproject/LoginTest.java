@@ -13,15 +13,20 @@ import com.example.kinoarenaproject.service.UserService;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import lombok.SneakyThrows;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
+import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,8 +44,11 @@ public class LoginTest {
     @Mock
     private ModelMapper mapper;
     @Mock
+    private JavaMailSender mailSender;
+    @Mock
     private BCryptPasswordEncoder passwordEncoder;
-
+@Mock
+Util util;
     @InjectMocks
     private UserService userService;
 
@@ -114,7 +122,7 @@ public class LoginTest {
         user.setEmail(Util.EMAIL);
 
         assertThrows(BadRequestException.class,()->userService.register(registerDTO));
-        
+
     }
     @Test
     public void emailExist(){
@@ -155,8 +163,110 @@ public class LoginTest {
         Matcher matcher=pattern.matcher(registerDTO.getPassword());
         assertFalse(pattern.matcher(registerDTO.getPassword()).matches());
     }
-//--------------------------------------------------------------------------------------------------------------------
+    @Test
+    public void successfulRegister(){
+        RegisterDTO registerDTO=new RegisterDTO(Util.FIRST_NAME,Util.LAST_NAME,Util.EMAIL,Util.PASSWORD,Util.CONFIRM_PASSWORD,Util.BIRTH_DATE,Util.CITY_ID,Util.GENDER,Util.PHONE,Util.ROLE_NAME,"error");
+        User u=new User();
+        u.setFirst_name(registerDTO.getFirst_name());
+        u.setLast_name(registerDTO.getLast_name());
+        u.setEmail(registerDTO.getEmail());
+        u.setPassword(registerDTO.getPassword());
+        u.setBirth_date(registerDTO.getBirth_date());
+        u.setCity_id(registerDTO.getCity_id());
+        u.setGender(registerDTO.getGender());
+        u.setPhone_number(registerDTO.getPhone_number());
+        u.setRole_name(registerDTO.getRole_name());
+        u.setEnable(true);
+
+        UserWithoutPasswordDTO expected=new UserWithoutPasswordDTO();
+        expected.setFirst_name(registerDTO.getFirst_name());
+        expected.setLast_name(registerDTO.getLast_name());
+        expected.setEmail(registerDTO.getEmail());
+        expected.setBirth_date(registerDTO.getBirth_date());
+        expected.setCity_id(registerDTO.getCity_id());
+        expected.setGender(registerDTO.getGender());
+        expected.setPhone_number(registerDTO.getPhone_number());
+        expected.setRole_name(registerDTO.getRole_name());
+
+
+        when(userRepository.existsByEmail(registerDTO.getEmail())).thenReturn(false);
+        when(mapper.map(registerDTO,User.class)).thenReturn(u);
+        when(passwordEncoder.encode(registerDTO.getPassword())).thenReturn(Util.PASSWORD);
+        when(userRepository.save(any(User.class))).thenReturn(u);
+       
+        when(mapper.map(u,UserWithoutPasswordDTO.class)).thenReturn(expected);
+
+
+        UserWithoutPasswordDTO result=userService.register(registerDTO);
+        assertNotNull(result);
+        assertEquals(result,expected);
+    }
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+    @SneakyThrows
+    @Test
+    public void checkEmailConfirmation(){
+     String token=Util.CONFIRMATION_TOKEN;
+     User u=new User();
+     u.setConfirmatronToken(token);
+     u.setEmail(Util.EMAIL);
+     when(userRepository.findAllByConfirmatronToken(token)).thenReturn(Optional.of(u));
+     // Simulate the user clicking the confirmation link
+        assertTrue(userService.confirmEmail(token));
+        // Verify that the user's account is marked as confirmed
+        assertTrue(u.isEnable());
+        // Verify that the email sender sends the confirmation email
+        mailSender.send(SimpleMailMessage.class.newInstance());
+        Mockito.verify(mailSender,times(1)).send(any(SimpleMailMessage.class));
+    }
+    @Test
+    public void testConfirmEmail() {
+        // Prepare test data
+        String token = "validToken";
+        User user = new User();
+        user.setEmail("test@example.com");
+        user.setConfirmatronToken(token);
+        // Mock the userRepository to return the user with the provided token
+        Mockito.when(userRepository.findAllByConfirmatronToken(token)).thenReturn(Optional.of(user));
+
+        // Call the confirmEmail method
+        boolean result = userService.confirmEmail(token);
+
+        // Assert that the method returns true on successful confirmation
+        assertTrue(result);
+
+        // Assert that the user's confirmatronToken is null after confirmation
+        assertNull(user.getConfirmatronToken());
+
+        // Assert that the user's 'enable' flag is set to true after confirmation
+        assertTrue(user.isEnable());
+
+        // Assert that the userRepository.save() method was called with the user object
+        Mockito.verify(userRepository, Mockito.times(1)).save(user);
+    }
+    @Test
+    public void testPasswordMismatch() {
+        // Create a RegisterDTO with password and confirm password mismatch
+        RegisterDTO registerDTO = new RegisterDTO();
+        registerDTO.setPassword("password1");
+        registerDTO.setConfirmPassword("password2");
+
+        // Perform the registration and verify that a BadRequestException is thrown
+        assertThrows(BadRequestException.class, () -> userService.register(registerDTO));
+
+        // Verify that the userRepository methods are not invoked
+        verify(userRepository, never()).existsByEmail(anyString());
+        verify(userRepository, never()).save(any(User.class));
+    }
+
 }
+
+
+
+//--------------------------------------------------------------------------------------------------------------------
+
 
 
 
