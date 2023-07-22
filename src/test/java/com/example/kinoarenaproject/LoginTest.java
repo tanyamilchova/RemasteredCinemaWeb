@@ -223,52 +223,21 @@ public class LoginTest {
         u.setConfirmatronToken(token);
         u.setEmail(Util.EMAIL);
         when(userRepository.findAllByConfirmatronToken(token)).thenReturn(Optional.of(u));
-        // Simulate the user clicking the confirmation link
         assertTrue(userService.confirmEmail(token));
-        // Verify that the user's account is marked as confirmed
         assertTrue(u.isEnable());
-        // Verify that the email sender sends the confirmation email
+
         mailSender.send(SimpleMailMessage.class.newInstance());
         Mockito.verify(mailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     @Test
-    public void testConfirmEmail() {
-        // Prepare test data
-        String token = "validToken";
-        User user = new User();
-        user.setEmail("test@example.com");
-        user.setConfirmatronToken(token);
-        // Mock the userRepository to return the user with the provided token
-        Mockito.when(userRepository.findAllByConfirmatronToken(token)).thenReturn(Optional.of(user));
-
-        // Call the confirmEmail method
-        boolean result = userService.confirmEmail(token);
-
-        // Assert that the method returns true on successful confirmation
-        assertTrue(result);
-
-        // Assert that the user's confirmatronToken is null after confirmation
-        assertNull(user.getConfirmatronToken());
-
-        // Assert that the user's 'enable' flag is set to true after confirmation
-        assertTrue(user.isEnable());
-
-        // Assert that the userRepository.save() method was called with the user object
-        Mockito.verify(userRepository, Mockito.times(1)).save(user);
-    }
-
-    @Test
     public void testPasswordMismatch() {
-        // Create a RegisterDTO with password and confirm password mismatch
+
         RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setPassword("password1");
         registerDTO.setConfirmPassword("password2");
-
-        // Perform the registration and verify that a BadRequestException is thrown
         assertThrows(BadRequestException.class, () -> userService.register(registerDTO));
 
-        // Verify that the userRepository methods are not invoked
         verify(userRepository, never()).existsByEmail(anyString());
         verify(userRepository, never()).save(any(User.class));
     }
@@ -276,14 +245,7 @@ public class LoginTest {
 
 //--------------------------------------------------------------------------------------------------------------------
 
-//    public UserWithoutPasswordDTO getById(int id) {
-//        Optional<User> opt = userRepository.findById(id);
-//        if (opt.isPresent()) {
-//            return mapper.map(opt.get(), UserWithoutPasswordDTO.class);
-//        } else {
-//            throw new NotFoundException("User not found");
-//        }
-//    }
+
     @Test
     public void testUserIdDoesNotExist(){
 

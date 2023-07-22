@@ -107,17 +107,10 @@ public class UserService extends com.example.kinoarenaproject.service.Service {
         if(! Util.isValidPassword(changePassData.getNewPassword())) {
             throw new UnauthorizedException("Week password");
         }
-//        Optional<User> opt = userRepository.findById(id);
-//        if (!opt.isPresent()) {
-//            throw new UnauthorizedException("Wrong credentials");
-//        }
-//        User u = opt.get();
         User u=ifPresent(userRepository.findById(id));
-
-            u.setPassword(passwordEncoder.encode(changePassData.getNewPassword()));
-            userRepository.save(u);
-
-            return mapper.map(u, UserWithoutPasswordDTO.class);
+        u.setPassword(passwordEncoder.encode(changePassData.getNewPassword()));
+        userRepository.save(u);
+        return mapper.map(u, UserWithoutPasswordDTO.class);
         }
 
     public UserWithoutPasswordDTO editProfile(EditProfileDTO editProfileData, int id) {
