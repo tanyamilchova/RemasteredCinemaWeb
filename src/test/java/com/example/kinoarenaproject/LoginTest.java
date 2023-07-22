@@ -47,8 +47,8 @@ public class LoginTest {
     private JavaMailSender mailSender;
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
-@Mock
-Util util;
+    @Mock
+    Util util;
     @InjectMocks
     private UserService userService;
 
@@ -62,20 +62,20 @@ Util util;
         user.setEnable(true);
 
 
-        UserWithoutPasswordDTO expected=new UserWithoutPasswordDTO(user.getId(),Util.FIRST_NAME,Util.LAST_NAME,Util.EMAIL,Util.BIRTH_DATE,Util.CITY_ID,Util.GENDER,Util.PHONE,Util.ROLE_NAME,Util.PROFILE_IMAGE);
+        UserWithoutPasswordDTO expected = new UserWithoutPasswordDTO(user.getId(), Util.FIRST_NAME, Util.LAST_NAME, Util.EMAIL, Util.BIRTH_DATE, Util.CITY_ID, Util.GENDER, Util.PHONE, Util.ROLE_NAME, Util.PROFILE_IMAGE);
         when(userRepository.findByEmail(loginData.getEmail())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(loginData.getPassword(), user.getPassword())).thenReturn(true);
         when(userService.login(loginData)).thenReturn(expected);
-        UserWithoutPasswordDTO userWithoutPasswordDTO=userService.login(loginData);
+        UserWithoutPasswordDTO userWithoutPasswordDTO = userService.login(loginData);
 
         assertNotNull(userWithoutPasswordDTO);
-        assertEquals(userWithoutPasswordDTO,expected);
+        assertEquals(userWithoutPasswordDTO, expected);
 
     }
 
     @Test
     public void testWrongEmail() {
-        LoginDTO loginData = new LoginDTO(Util.WRONG_EMAIL,Util.PASSWORD);
+        LoginDTO loginData = new LoginDTO(Util.WRONG_EMAIL, Util.PASSWORD);
 
         when(userRepository.findByEmail(loginData.getEmail())).thenReturn(Optional.empty());
 
@@ -83,6 +83,7 @@ Util util;
             userService.login(loginData);
         });
     }
+
     @Test
     public void testWrongPassword() {
         LoginDTO loginData = new LoginDTO(Util.EMAIL, Util.WRONG_PASSWORD);
@@ -99,6 +100,7 @@ Util util;
             userService.login(loginData);
         });
     }
+
     @Test
     public void testLoginUserNotEnabled() {
         LoginDTO loginDTO = new LoginDTO(Util.EMAIL, Util.PASSWORD);
@@ -110,32 +112,36 @@ Util util;
 
         when(userRepository.findByEmail(loginDTO.getEmail())).thenReturn(Optional.of(user));
 
-        assertThrows( UnauthorizedException.class,()->{
-            userService.login(loginDTO);});
+        assertThrows(UnauthorizedException.class, () -> {
+            userService.login(loginDTO);
+        });
     }
-//--------------------------------------------------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------------------------------------------------
     @Test
-    public void wrongConfirmPassword(){
-        RegisterDTO registerDTO=new RegisterDTO(Util.FIRST_NAME,Util.LAST_NAME,Util.EMAIL,Util.PASSWORD,Util.CONFIRM_PASSWORD,Util.BIRTH_DATE,Util.CITY_ID,Util.GENDER,Util.PHONE,Util.ROLE_NAME,"error");
-        User user=new User();
+    public void wrongConfirmPassword() {
+        RegisterDTO registerDTO = new RegisterDTO(Util.FIRST_NAME, Util.LAST_NAME, Util.EMAIL, Util.PASSWORD, Util.CONFIRM_PASSWORD, Util.BIRTH_DATE, Util.CITY_ID, Util.GENDER, Util.PHONE, Util.ROLE_NAME, "error");
+        User user = new User();
         user.setPassword(Util.PASSWORD);
         user.setEmail(Util.EMAIL);
 
-        assertThrows(BadRequestException.class,()->userService.register(registerDTO));
+        assertThrows(BadRequestException.class, () -> userService.register(registerDTO));
 
     }
+
     @Test
-    public void emailExist(){
-        RegisterDTO registerDTO=new RegisterDTO(Util.FIRST_NAME,Util.LAST_NAME,Util.EMAIL,Util.PASSWORD,Util.CONFIRM_PASSWORD,Util.BIRTH_DATE,Util.CITY_ID,Util.GENDER,Util.PHONE,Util.ROLE_NAME,"error");
-        User u=new User();
+    public void emailExist() {
+        RegisterDTO registerDTO = new RegisterDTO(Util.FIRST_NAME, Util.LAST_NAME, Util.EMAIL, Util.PASSWORD, Util.CONFIRM_PASSWORD, Util.BIRTH_DATE, Util.CITY_ID, Util.GENDER, Util.PHONE, Util.ROLE_NAME, "error");
+        User u = new User();
         u.setEmail(Util.EMAIL);
-        assertThrows(BadRequestException.class,()->userService.register(registerDTO));
+        assertThrows(BadRequestException.class, () -> userService.register(registerDTO));
     }
-    @Test
-    public void invalidEmail(){
-         String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
 
-         RegisterDTO registerDTO=new RegisterDTO();
+    @Test
+    public void invalidEmail() {
+        String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+
+        RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setEmail(Util.WRONG_EMAIL);
 
         Pattern pattern = Pattern.compile(EMAIL_REGEX);
@@ -144,29 +150,31 @@ Util util;
     }
 
     @Test
-    public void invalidPhoneNumber(){
-        RegisterDTO registerDTO=new RegisterDTO();
+    public void invalidPhoneNumber() {
+        RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setPhone_number(Util.INVALID_PHONE);
 
 
         String PHONE_REGEX = "^(\\+\\d{1,2})?\\s*(\\d{10})$";
-        Pattern pattern= Pattern.compile(PHONE_REGEX);
-        Matcher matcher=pattern.matcher(registerDTO.getPhone_number());
+        Pattern pattern = Pattern.compile(PHONE_REGEX);
+        Matcher matcher = pattern.matcher(registerDTO.getPhone_number());
         assertFalse(pattern.matcher(registerDTO.getPhone_number()).matches());
     }
+
     @Test
-    public void invalidPassword(){
-        RegisterDTO registerDTO=new RegisterDTO();
+    public void invalidPassword() {
+        RegisterDTO registerDTO = new RegisterDTO();
         registerDTO.setPassword(Util.PASSWORD);
         String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
-        Pattern pattern=Pattern.compile(PASSWORD_REGEX);
-        Matcher matcher=pattern.matcher(registerDTO.getPassword());
+        Pattern pattern = Pattern.compile(PASSWORD_REGEX);
+        Matcher matcher = pattern.matcher(registerDTO.getPassword());
         assertFalse(pattern.matcher(registerDTO.getPassword()).matches());
     }
+
     @Test
-    public void successfulRegister(){
-        RegisterDTO registerDTO=new RegisterDTO(Util.FIRST_NAME,Util.LAST_NAME,Util.EMAIL,Util.PASSWORD,Util.CONFIRM_PASSWORD,Util.BIRTH_DATE,Util.CITY_ID,Util.GENDER,Util.PHONE,Util.ROLE_NAME,"error");
-        User u=new User();
+    public void successfulRegister() {
+        RegisterDTO registerDTO = new RegisterDTO(Util.FIRST_NAME, Util.LAST_NAME, Util.EMAIL, Util.PASSWORD, Util.CONFIRM_PASSWORD, Util.BIRTH_DATE, Util.CITY_ID, Util.GENDER, Util.PHONE, Util.ROLE_NAME, "error");
+        User u = new User();
         u.setFirst_name(registerDTO.getFirst_name());
         u.setLast_name(registerDTO.getLast_name());
         u.setEmail(registerDTO.getEmail());
@@ -178,7 +186,7 @@ Util util;
         u.setRole_name(registerDTO.getRole_name());
         u.setEnable(true);
 
-        UserWithoutPasswordDTO expected=new UserWithoutPasswordDTO();
+        UserWithoutPasswordDTO expected = new UserWithoutPasswordDTO();
         expected.setFirst_name(registerDTO.getFirst_name());
         expected.setLast_name(registerDTO.getLast_name());
         expected.setEmail(registerDTO.getEmail());
@@ -190,37 +198,40 @@ Util util;
 
 
         when(userRepository.existsByEmail(registerDTO.getEmail())).thenReturn(false);
-        when(mapper.map(registerDTO,User.class)).thenReturn(u);
+        when(mapper.map(registerDTO, User.class)).thenReturn(u);
         when(passwordEncoder.encode(registerDTO.getPassword())).thenReturn(Util.PASSWORD);
         when(userRepository.save(any(User.class))).thenReturn(u);
-       
-        when(mapper.map(u,UserWithoutPasswordDTO.class)).thenReturn(expected);
+
+        when(mapper.map(u, UserWithoutPasswordDTO.class)).thenReturn(expected);
 
 
-        UserWithoutPasswordDTO result=userService.register(registerDTO);
+        UserWithoutPasswordDTO result = userService.register(registerDTO);
         assertNotNull(result);
-        assertEquals(result,expected);
+        assertEquals(result, expected);
     }
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
     }
+
     @SneakyThrows
     @Test
-    public void checkEmailConfirmation(){
-     String token=Util.CONFIRMATION_TOKEN;
-     User u=new User();
-     u.setConfirmatronToken(token);
-     u.setEmail(Util.EMAIL);
-     when(userRepository.findAllByConfirmatronToken(token)).thenReturn(Optional.of(u));
-     // Simulate the user clicking the confirmation link
+    public void checkEmailConfirmation() {
+        String token = Util.CONFIRMATION_TOKEN;
+        User u = new User();
+        u.setConfirmatronToken(token);
+        u.setEmail(Util.EMAIL);
+        when(userRepository.findAllByConfirmatronToken(token)).thenReturn(Optional.of(u));
+        // Simulate the user clicking the confirmation link
         assertTrue(userService.confirmEmail(token));
         // Verify that the user's account is marked as confirmed
         assertTrue(u.isEnable());
         // Verify that the email sender sends the confirmation email
         mailSender.send(SimpleMailMessage.class.newInstance());
-        Mockito.verify(mailSender,times(1)).send(any(SimpleMailMessage.class));
+        Mockito.verify(mailSender, times(1)).send(any(SimpleMailMessage.class));
     }
+
     @Test
     public void testConfirmEmail() {
         // Prepare test data
@@ -246,6 +257,7 @@ Util util;
         // Assert that the userRepository.save() method was called with the user object
         Mockito.verify(userRepository, Mockito.times(1)).save(user);
     }
+
     @Test
     public void testPasswordMismatch() {
         // Create a RegisterDTO with password and confirm password mismatch
@@ -261,14 +273,37 @@ Util util;
         verify(userRepository, never()).save(any(User.class));
     }
 
-}
-
-
 
 //--------------------------------------------------------------------------------------------------------------------
 
+//    public UserWithoutPasswordDTO getById(int id) {
+//        Optional<User> opt = userRepository.findById(id);
+//        if (opt.isPresent()) {
+//            return mapper.map(opt.get(), UserWithoutPasswordDTO.class);
+//        } else {
+//            throw new NotFoundException("User not found");
+//        }
+//    }
+    @Test
+    public void testUserIdDoesNotExist(){
 
+        int id=1;
+        User u=new User();
+        u.setId(id);
+        assertFalse(userRepository.existsById(u.getId()));
+        assertThrows(NotFoundException.class,()->userService.userById(id));
 
+    }
+    @Test
+    public void testGetUserByIdSuccessfully(){
+        int id=1;
+        User u=new User();
+        u.setId(id);
+
+        when(userRepository.findById(u.getId())).thenReturn(Optional.of(u));
+        assertNotNull(userRepository.findById(u.getId()));
+    }
+}
 
 
 
